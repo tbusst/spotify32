@@ -16,5 +16,6 @@
 void initScreen();
 void displayWiFi(String ip, String ssid);
 void displayTrack(TrackInfo trackInfo, bool currentlyActive, bool trackUpdated);
+//void displayTrack(TrackInfo trackInfo, bool currentlyActive, bool trackUpdated, int volume);
 
 #endif

@@ -19,6 +19,8 @@ struct TrackInfo {
 
 TrackInfo parseTrackInfo(String jsonString);
 TrackInfo getCurrentlyPlaying(String access_token, String token_type);
+void changeVolume(String access_token, String token_type, int volume);
+void togglePlayState(String access_token, String token_type);
 //String getArtistData(String access_token, String token_type);
 
 #endif

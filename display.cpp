@@ -1,7 +1,5 @@
 #include "display.h"
 
-
-
 int x = 0;
 unsigned long lastXIncrease = 0;
 
@@ -11,8 +9,6 @@ U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 String secsToMins(int seconds) {
   int mins = seconds / 60;
   int secs = seconds % 60;
-
-  // Format as MM:SS with leading zero for seconds
   return String(mins) + ":" + (secs < 10 ? "0" : "") + String(secs);
 }
 
@@ -28,7 +24,11 @@ void initScreen() {
   display.clearDisplay();
   display.setTextColor(WHITE);
   u8g2Fonts.setFont(u8g2_font_9x15_mf);
-  u8g2Fonts.setCursor(10, 20);
+  String splashString = "Spotify32";
+  int splashWidth = u8g2Fonts.getUTF8Width(splashString.c_str());
+  int xPos = (SCREEN_WIDTH - splashWidth)/2;
+  int yPos = (SCREEN_HEIGHT+15)/2;
+  u8g2Fonts.setCursor(xPos, yPos);
   u8g2Fonts.println("Spotify32");
   display.display(); 
 
@@ -51,18 +51,19 @@ void displayWiFi(String ip, String SSID) {
 
 void displayTrack(TrackInfo trackInfo, bool currentlyActive, bool trackUpdated) {
   display.clearDisplay();
-  u8g2Fonts.setFont(u8g2_font_5x8_mf);
 
   // Scroll logic for artist name
-  if (millis() - lastXIncrease >= 100) {
+  if (millis() - lastXIncrease >= 75) {
     x--;
     lastXIncrease = millis();
   }
 
+  u8g2Fonts.setFont(u8g2_font_8x13_mf);
   int textWidth = u8g2Fonts.getUTF8Width(trackInfo.trackName.c_str());
   if (x < -textWidth) {
     x = SCREEN_WIDTH;
   }
+  u8g2Fonts.setFont(u8g2_font_5x8_mf);
 
   // Check if a track is currently playing
   if (currentlyActive) {
@@ -73,9 +74,9 @@ void displayTrack(TrackInfo trackInfo, bool currentlyActive, bool trackUpdated) 
     }
 
     // Display volume percentage at the top-right corner
-    u8g2Fonts.setCursor(119, 6);
-    if (trackInfo.volumePercent == 100) { u8g2Fonts.setCursor(113,6); }
-    u8g2Fonts.print(trackInfo.volumePercent);
+    // u8g2Fonts.setCursor(119, 6);
+    // if (volume == 100) { u8g2Fonts.setCursor(113,6); }
+    // u8g2Fonts.print(volume);
     u8g2Fonts.setCursor(0, 34);
     u8g2Fonts.print(trackInfo.artistName);
 
@@ -93,7 +94,7 @@ void displayTrack(TrackInfo trackInfo, bool currentlyActive, bool trackUpdated) 
     int barWidth = map(progress, 0, 100, 0, 128); // Map percentage to width
     display.fillRect(0, 37, barWidth, 10, SSD1306_WHITE); // Fill the progress bar
 
-    u8g2Fonts.setCursor(0, 64);
+    u8g2Fonts.setCursor(0, 63);
     u8g2Fonts.println(trackInfo.deviceName);
 
     // Display artist name and handle scrolling if it's too long
